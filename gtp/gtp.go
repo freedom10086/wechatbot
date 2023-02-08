@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/869413421/wechatbot/config"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -77,7 +77,7 @@ func Completions(msg string) (string, error) {
 	}
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return "", err
 	}

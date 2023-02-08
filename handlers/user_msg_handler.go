@@ -40,6 +40,11 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	sender, err := msg.Sender()
 	log.Printf("Received User %v Text Msg : %v", sender.NickName, msg.Content)
 
+	// 公众号发的
+	if sender.IsMP() {
+		return nil
+	}
+
 	// 向GPT发起请求
 	requestText := strings.TrimSpace(msg.Content)
 	requestText = strings.Trim(msg.Content, "\n")

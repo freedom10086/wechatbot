@@ -40,15 +40,10 @@ func Handler(msg *openwechat.Message) {
 				log.Fatalf("add friend agree error : %v", err)
 			}
 		}
-	} else if msg.IsSystem() || msg.StatusNotify() { // 系统消息
+	} else if msg.IsSystem() || msg.StatusNotify() || msg.MsgType == openwechat.MsgTypeApp { // 系统消息
 		log.Printf("unsupport system msg %d %s", msg.MsgType, msg.Content)
 	} else {
 		// 其余消息 包含私聊
 		handlers[UserHandler].handle(msg)
-	}
-
-	err := msg.AsRead()
-	if err != nil {
-		log.Printf("mark message as read failed %v \n", err)
 	}
 }
