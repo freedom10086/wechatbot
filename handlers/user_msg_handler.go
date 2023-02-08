@@ -17,6 +17,9 @@ type UserMessageHandler struct {
 func (g *UserMessageHandler) handle(msg *openwechat.Message) error {
 	if msg.IsText() {
 		return g.ReplyText(msg)
+	} else {
+		msg.ReplyText("我现在只支持文字消息")
+		log.Printf("not support msg type: %d %s\n", msg.MsgType, msg.Content)
 	}
 	return nil
 }
@@ -28,6 +31,11 @@ func NewUserMessageHandler() MessageHandlerInterface {
 
 // ReplyText 发送文本消息到群
 func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
+	// 自己发的消息
+	if msg.IsSendBySelf() {
+		return nil
+	}
+
 	// 接收私聊消息
 	sender, err := msg.Sender()
 	log.Printf("Received User %v Text Msg : %v", sender.NickName, msg.Content)
@@ -38,7 +46,7 @@ func (g *UserMessageHandler) ReplyText(msg *openwechat.Message) error {
 	reply, err := gtp.Completions(requestText)
 	if err != nil {
 		log.Printf("gtp request error: %v \n", err)
-		msg.ReplyText("机器人神了，我一会发现了就去修。")
+		msg.ReplyText("Server Error 请稍后重试~")
 		return err
 	}
 	if reply == "" {
